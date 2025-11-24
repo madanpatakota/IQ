@@ -6,27 +6,29 @@ namespace Misard.IQs.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+
     public class AuthController : ControllerBase
     {
-        private readonly IAuthService _authService;
+        private readonly IAuthService _auth;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService auth)
         {
-            _authService = authService;
+            _auth = auth;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterRequestDto request)
+        public async Task<IActionResult> Register(RegisterRequestDto dto)
         {
-            var result = await _authService.RegisterAsync(request);
+            var result = await _auth.RegisterAsync(dto);
             return Ok(result);
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
+        public async Task<IActionResult> Login(LoginRequestDto dto)
         {
-            var result = await _authService.LoginAsync(request);
+            var result = await _auth.LoginAsync(dto);
             return Ok(result);
         }
     }
+
 }

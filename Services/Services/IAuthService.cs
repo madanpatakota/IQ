@@ -4,7 +4,7 @@ namespace Misard.IQs.Application.Interfaces.Services
 {
     public interface IAuthService
     {
-        Task<AuthResultDto> RegisterAsync(RegisterRequestDto request);
-        Task<AuthResultDto> LoginAsync(LoginRequestDto request);
+        Task<AuthResultDto> RegisterAsync(RegisterRequestDto dto);
+        Task<AuthResultDto> LoginAsync(LoginRequestDto dto);
     }
 }

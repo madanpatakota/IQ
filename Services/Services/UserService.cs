@@ -1,50 +1,46 @@
 ﻿using Misard.IQs.Application.DTOs.Users;
-using Misard.IQs.Application.Exceptions;
 using Misard.IQs.Application.Interfaces.Repositories;
 using Misard.IQs.Application.Interfaces.Services;
-using Misard.IQs.Domain.Entities;
 
-namespace Misard.IQs.Application.Services;
-
-public class UserService : IUserService
+namespace Misard.IQs.Infrastructure.Services
 {
-    private readonly IUserRepository _userRepo;
-
-    public UserService(IUserRepository userRepo)
+    public class UserService : IUserService
     {
-        _userRepo = userRepo;
-    }
+        private readonly IUserRepository _userRepository;
 
-    public async Task<int> RegisterAsync(RegisterUserDto dto)
-    {
-        var existing = await _userRepo.GetByEmailAsync(dto.Email);
-        if (existing != null)
+        public UserService(IUserRepository userRepository)
         {
-            throw new BusinessException("Email is already registered.");
+            _userRepository = userRepository;
         }
 
-        var user = new User
+        public async Task<UserDto?> GetByIdAsync(int id)
         {
-            FullName = dto.FullName,
-            Email = dto.Email,
-            PhoneNumber = dto.PhoneNumber,
-            // For now, simple: store null or hashed later
-            PasswordHash = dto.Password != null
-                ? HashPassword(dto.Password)
-                : null
-        };
+            var user = await _userRepository.GetByIdAsync(id);
+            return user == null ? null : Map(user);
+        }
 
-        user = await _userRepo.AddAsync(user);
-        return user.Id;
-    }
+        public async Task<UserDto?> GetByEmailAsync(string email)
+        {
+            var user = await _userRepository.GetByEmailAsync(email);
+            return user == null ? null : Map(user);
+        }
 
-    private static string HashPassword(string password)
-    {
-        // Simple SHA256 hash – for demo.
-        // In production, use a proper password hashing library (e.g., BCrypt).
-        using var sha = System.Security.Cryptography.SHA256.Create();
-        var bytes = System.Text.Encoding.UTF8.GetBytes(password);
-        var hashBytes = sha.ComputeHash(bytes);
-        return Convert.ToBase64String(hashBytes);
+        public async Task<UserDto?> GetByPhoneAsync(string phone)
+        {
+            var user = await _userRepository.GetByPhoneAsync(phone);
+            return user == null ? null : Map(user);
+        }
+
+        private static UserDto Map(Misard.IQs.Domain.Entities.User user)
+        {
+            return new UserDto
+            {
+                Id = user.Id,
+                FullName = user.FullName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                CreatedOn = user.CreatedOn
+            };
+        }
     }
 }
