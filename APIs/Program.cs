@@ -7,6 +7,18 @@ using Misard.IQs.Api.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngular",
+        builder => builder
+            .WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials()
+        );
+});
+
+
 // Controllers
 builder.Services.AddControllers();
 
@@ -54,6 +66,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseCors("AllowAngular");
 
 app.UseHttpsRedirection();
 
