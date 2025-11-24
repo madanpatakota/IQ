@@ -1,41 +1,32 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Misard.IQs.Application.DTOs.Users;
+using Misard.IQs.Application.DTOs.Auth;
 using Misard.IQs.Application.Interfaces.Services;
 
-namespace Misard.IQs.Api.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-public class AuthController : ControllerBase
+namespace Misard.IQs.Api.Controllers
 {
-    private readonly IUserService _userService;
-    private readonly IAuthService _authService;
-
-    public AuthController(IUserService userService, IAuthService authService)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class AuthController : ControllerBase
     {
-        _userService = userService;
-        _authService = authService;
-    }
+        private readonly IAuthService _authService;
 
-    [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterUserDto dto)
-    {
-        var userId = await _userService.RegisterAsync(dto);
-        return Ok(new
+        public AuthController(IAuthService authService)
         {
-            userId,
-            message = "Registration successful. You can now login to view detailed results and history."
-        });
-    }
+            _authService = authService;
+        }
 
-    [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginRequestDto dto)
-    {
-        var token = await _authService.LoginAsync(dto);
-        return Ok(new
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterRequestDto request)
         {
-            token,
-            message = "Login successful."
-        });
+            var result = await _authService.RegisterAsync(request);
+            return Ok(result);
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
+        {
+            var result = await _authService.LoginAsync(request);
+            return Ok(result);
+        }
     }
 }

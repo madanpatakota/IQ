@@ -34,7 +34,7 @@ public class UserService : IUserService
                 : null
         };
 
-        user = await _userRepo.CreateAsync(user);
+        user = await _userRepo.AddAsync(user);
         return user.Id;
     }
 

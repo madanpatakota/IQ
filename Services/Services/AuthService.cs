@@ -1,45 +1,75 @@
-﻿using Misard.IQs.Application.DTOs.Users;
-using Misard.IQs.Application.Exceptions;
+﻿using Misard.IQs.Application.DTOs.Auth;
 using Misard.IQs.Application.Interfaces.Repositories;
 using Misard.IQs.Application.Interfaces.Security;
 using Misard.IQs.Application.Interfaces.Services;
+using Misard.IQs.Domain.Entities;
 
-namespace Misard.IQs.Application.Services;
-
-public class AuthService : IAuthService
+namespace Misard.IQs.Infrastructure.Services
 {
-    private readonly IUserRepository _userRepo;
-    private readonly IJwtTokenGenerator _jwtGenerator;
-
-    public AuthService(IUserRepository userRepo, IJwtTokenGenerator jwtGenerator)
+    public class AuthService : IAuthService
     {
-        _userRepo = userRepo;
-        _jwtGenerator = jwtGenerator;
-    }
+        private readonly IUserRepository _userRepository;
+        private readonly IJwtTokenGenerator _jwtTokenGenerator;
 
-    public async Task<string> LoginAsync(LoginRequestDto dto)
-    {
-        var user = await _userRepo.GetByEmailAsync(dto.Email);
-        if (user == null || string.IsNullOrEmpty(user.PasswordHash))
+        public AuthService(
+            IUserRepository userRepository,
+            IJwtTokenGenerator jwtTokenGenerator)
         {
-            throw new BusinessException("Invalid email or password.");
+            _userRepository = userRepository;
+            _jwtTokenGenerator = jwtTokenGenerator;
         }
 
-        var hashed = HashPassword(dto.Password);
-        if (!string.Equals(user.PasswordHash, hashed, StringComparison.Ordinal))
+        public async Task<AuthResultDto> RegisterAsync(RegisterRequestDto request)
         {
-            throw new BusinessException("Invalid email or password.");
+            // check if email already exists
+            var existing = await _userRepository.GetByEmailAsync(request.Email);
+            if (existing != null)
+            {
+                throw new InvalidOperationException("Email is already registered.");
+            }
+
+            var user = new User
+            {
+                FullName = request.FullName,
+                Email = request.Email,
+                PhoneNumber = request.PhoneNumber,
+                CreatedOn = DateTime.UtcNow
+            };
+
+            user = await _userRepository.AddAsync(user);
+
+            // NOTE: your IJwtTokenGenerator signature: GenerateToken(int userId, string email)
+            var token = _jwtTokenGenerator.GenerateToken(user.Id, user.Email);
+
+            return new AuthResultDto
+            {
+                Token = token,
+                FullName = user.FullName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber
+            };
         }
 
-        var token = _jwtGenerator.GenerateToken(user.Id, user.Email);
-        return token;
-    }
+        public async Task<AuthResultDto> LoginAsync(LoginRequestDto request)
+        {
+            var user = await _userRepository.GetByEmailAsync(request.Email);
+            if (user == null)
+            {
+                // you can either:
+                // 1) throw error
+                // 2) auto-register (here we throw)
+                throw new InvalidOperationException("User not found. Please register first.");
+            }
 
-    private static string HashPassword(string password)
-    {
-        using var sha = System.Security.Cryptography.SHA256.Create();
-        var bytes = System.Text.Encoding.UTF8.GetBytes(password);
-        var hashBytes = sha.ComputeHash(bytes);
-        return Convert.ToBase64String(hashBytes);
+            var token = _jwtTokenGenerator.GenerateToken(user.Id, user.Email);
+
+            return new AuthResultDto
+            {
+                Token = token,
+                FullName = user.FullName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber
+            };
+        }
     }
 }

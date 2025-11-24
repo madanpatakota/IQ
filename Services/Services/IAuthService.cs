@@ -1,8 +1,10 @@
-﻿using Misard.IQs.Application.DTOs.Users;
+﻿using Misard.IQs.Application.DTOs.Auth;
 
-namespace Misard.IQs.Application.Interfaces.Services;
-
-public interface IAuthService
+namespace Misard.IQs.Application.Interfaces.Services
 {
-    Task<string> LoginAsync(LoginRequestDto dto);  // returns JWT token
+    public interface IAuthService
+    {
+        Task<AuthResultDto> RegisterAsync(RegisterRequestDto request);
+        Task<AuthResultDto> LoginAsync(LoginRequestDto request);
+    }
 }

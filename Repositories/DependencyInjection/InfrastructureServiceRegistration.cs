@@ -6,6 +6,8 @@ using Misard.IQs.Application.Interfaces.Security;
 using Misard.IQs.Infrastructure.Persistence;
 using Misard.IQs.Infrastructure.Repositories;
 using Misard.IQs.Infrastructure.Security;
+using Misard.IQs.Application.Interfaces.Services;
+using Misard.IQs.Infrastructure.Services;
 
 namespace Misard.IQs.Infrastructure.DependencyInjection;
 
@@ -28,6 +30,8 @@ public static class InfrastructureServiceRegistration
 
         // Security
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+        // Services
+        services.AddScoped<IAuthService, AuthService>();
 
         return services;
     }

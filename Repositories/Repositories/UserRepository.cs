@@ -20,7 +20,7 @@ public class UserRepository : IUserRepository
             .FirstOrDefaultAsync(u => u.Email == email);
     }
 
-    public async Task<User> CreateAsync(User user)
+    public async Task<User> AddAsync(User user)
     {
         _db.Users.Add(user);
         await _db.SaveChangesAsync();

@@ -11,6 +11,10 @@ public class User : BaseEntity
     // For JWT login – optional but ready
     public string? PasswordHash { get; set; }
 
+    // NEW for auth
+    //public byte[]? PasswordHash { get; set; }
+    public byte[]? PasswordSalt { get; set; }
+
     public ICollection<QuizSession> QuizSessions { get; set; } = new List<QuizSession>();
 }
 
