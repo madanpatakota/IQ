@@ -44,7 +44,8 @@ public class QuizService : IQuizService
             DifficultyLevel = ParseDifficulty(request.DifficultyLevel),
             StartedAt = DateTime.UtcNow,
             TotalQuestions = questions.Count,
-            Status = QuizStatus.InProgress
+            Status = QuizStatus.InProgress,
+            UserId = request.UserId
         };
 
         // Create session in DB
@@ -90,7 +91,14 @@ public class QuizService : IQuizService
         {
             session.Status = QuizStatus.Expired;
             session.EndedAt = now;
-            await _sessionRepo.UpdateAsync(session);
+            try
+            {
+                await _sessionRepo.UpdateAsync(session);
+            }
+            catch(Exception ex)
+            {
+
+            }
             throw new BusinessException("Time is over. Session has expired.");
         }
 

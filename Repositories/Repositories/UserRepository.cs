@@ -26,8 +26,23 @@ namespace Misard.IQs.Infrastructure.Repositories
                 .FirstOrDefaultAsync(u => u.Email == email);
         }
 
+
+        //public async Task<User> getUsersList()
+        //{
+        //    //return await _context.Users;
+        //}
+
         public async Task<User?> GetByPhoneAsync(string phone)
         {
+            //var usersData = _context.Users;
+
+            //foreach (var user in usersData)
+            //{
+            //    Console.WriteLine(user);
+            //}
+
+           var usersList =  await _context.Users.ToListAsync();
+
             return await _context.Users
                 .FirstOrDefaultAsync(u => u.PhoneNumber == phone);
         }

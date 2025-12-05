@@ -31,6 +31,13 @@ public class QuizSessionRepository : IQuizSessionRepository
     public async Task UpdateAsync(QuizSession session)
     {
         _db.QuizSessions.Update(session);
-        await _db.SaveChangesAsync();
+        try
+        {
+            await _db.SaveChangesAsync();
+        }
+        catch(Exception ex)
+        {
+
+        }
     }
 }

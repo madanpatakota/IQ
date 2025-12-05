@@ -8,7 +8,7 @@ public class TechnologyConfiguration : IEntityTypeConfiguration<Technology>
 {
     public void Configure(EntityTypeBuilder<Technology> builder)
     {
-        builder.ToTable("Technologies");
+        builder.ToTable("technologies");
 
         builder.Property(t => t.Name)
             .IsRequired()

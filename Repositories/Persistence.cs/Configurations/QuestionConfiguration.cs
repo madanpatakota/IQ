@@ -8,7 +8,7 @@ public class QuestionConfiguration : IEntityTypeConfiguration<Question>
 {
     public void Configure(EntityTypeBuilder<Question> builder)
     {
-        builder.ToTable("Questions");
+        builder.ToTable("questions");
 
         builder.Property(q => q.QuestionText)
             .IsRequired()

@@ -8,7 +8,7 @@ public class QuizSessionConfiguration : IEntityTypeConfiguration<QuizSession>
 {
     public void Configure(EntityTypeBuilder<QuizSession> builder)
     {
-        builder.ToTable("QuizSessions");
+        builder.ToTable("quizsessions");
 
         builder.Property(q => q.Status)
             .IsRequired();

@@ -8,7 +8,7 @@ public class QuizSessionAnswerConfiguration : IEntityTypeConfiguration<QuizSessi
 {
     public void Configure(EntityTypeBuilder<QuizSessionAnswer> builder)
     {
-        builder.ToTable("QuizSessionAnswers");
+        builder.ToTable("quizsessionanswers");
 
         builder.Property(a => a.SelectedOption)
             .HasMaxLength(1);

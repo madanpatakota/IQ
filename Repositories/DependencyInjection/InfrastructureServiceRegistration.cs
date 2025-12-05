@@ -8,6 +8,9 @@ using Misard.IQs.Infrastructure.Repositories;
 using Misard.IQs.Infrastructure.Security;
 using Misard.IQs.Application.Interfaces.Services;
 using Misard.IQs.Infrastructure.Services;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
+//using Microsoft.EntityFrameworkCore;
+
 
 namespace Misard.IQs.Infrastructure.DependencyInjection;
 
@@ -20,7 +23,8 @@ public static class InfrastructureServiceRegistration
         // DbContext
         var connectionString = configuration.GetConnectionString("DefaultConnection");
         services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(connectionString));
+            options.UseNpgsql(connectionString))
+            ;
 
         // Repositories
         services.AddScoped<IQuestionRepository, QuestionRepository>();
