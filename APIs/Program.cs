@@ -7,6 +7,7 @@ using Misard.IQs.Api.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular",
@@ -14,10 +15,8 @@ builder.Services.AddCors(options =>
             .WithOrigins("http://localhost:4200")
             .AllowAnyHeader()
             .AllowAnyMethod()
-            .AllowCredentials()
-        );
+            .AllowCredentials());
 });
-
 
 // Controllers
 builder.Services.AddControllers();
@@ -26,7 +25,7 @@ builder.Services.AddControllers();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
-// Authentication (JWT)
+// JWT Authentication
 var jwtSection = builder.Configuration.GetSection("JwtSettings");
 var key = Encoding.UTF8.GetBytes(jwtSection["Key"]!);
 
@@ -52,28 +51,17 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// Swagger
-builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
-builder.Services.AddSwaggerGen(options =>
-{
-    // Include XML comments (Swagger needs this)
-    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    options.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
-});
+// ✔ REMOVE SWAGGER COMPLETELY
+// builder.Services.AddEndpointsApiExplorer();
+// builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Global exception middleware FIRST
+// middleware
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-//if (app.Environment.IsDevelopment())
-//{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-//}
-
+// app.UseSwagger(); 
+// app.UseSwaggerUI();
 
 app.UseCors("AllowAngular");
 
