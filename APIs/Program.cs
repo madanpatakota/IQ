@@ -7,6 +7,9 @@ using Misard.IQs.Api.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+
 // CORS
 builder.Services.AddCors(options =>
 {
@@ -50,6 +53,8 @@ builder.Services.AddAuthentication(options =>
         ClockSkew = TimeSpan.Zero
     };
 });
+
+
 
 // ✔ REMOVE SWAGGER COMPLETELY
 // builder.Services.AddEndpointsApiExplorer();
