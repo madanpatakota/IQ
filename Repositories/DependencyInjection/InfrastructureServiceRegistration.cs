@@ -23,8 +23,11 @@ public static class InfrastructureServiceRegistration
         // DbContext
         var connectionString = configuration.GetConnectionString("DefaultConnection");
         services.AddDbContext<AppDbContext>(options =>
-            options.UseNpgsql(connectionString))
+            options.UseSqlServer(connectionString))
             ;
+
+
+
 
         // Repositories
         services.AddScoped<IQuestionRepository, QuestionRepository>();
