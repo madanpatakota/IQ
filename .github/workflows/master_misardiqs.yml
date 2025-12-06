@@ -51,9 +51,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_2001B22E2A6141DE962D5A46107AEFA6 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F1F3F170D32B4A66B7C6BC32E4582D3E }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_D36772E552BC430D9022996176E7242A }}
+         client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID}}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID}}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -62,4 +62,5 @@ jobs:
           app-name: 'MisardIQs'
           slot-name: 'Production'
           package: .
+
           
