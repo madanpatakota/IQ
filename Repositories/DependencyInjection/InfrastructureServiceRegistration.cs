@@ -8,7 +8,7 @@ using Misard.IQs.Infrastructure.Repositories;
 using Misard.IQs.Infrastructure.Security;
 using Misard.IQs.Application.Interfaces.Services;
 using Misard.IQs.Infrastructure.Services;
-using Npgsql.EntityFrameworkCore.PostgreSQL;
+//using Npgsql.EntityFrameworkCore.PostgreSQL;
 //using Microsoft.EntityFrameworkCore;
 
 

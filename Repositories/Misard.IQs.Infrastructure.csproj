@@ -18,14 +18,13 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.15.0" />
-    <PackageReference Include="Npgsql" Version="8.0.4" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Misard.IQs.Domain\Misard.IQs.Domain.csproj" />
     <ProjectReference Include="..\Services\Misard.IQs.Application.csproj" />
+	  <PackageReference Include="Microsoft.IdentityModel.Protocols" Version="8.15.0" />
   </ItemGroup>
 
 </Project>
