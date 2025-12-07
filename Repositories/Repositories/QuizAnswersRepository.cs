@@ -17,6 +17,9 @@ namespace Misard.IQs.Infrastructure.Repositories
 
         public async Task<List<QuizSessionAnswer>> GetBySessionIdAsync(int sessionId)
         {
+
+            var testDAta1 = await _db.QuizSessionAnswers.ToListAsync();
+
             return await _db.QuizSessionAnswers
                 .Include(a => a.Question)
                 .Where(a => a.SessionId == sessionId)

@@ -18,6 +18,8 @@ namespace Misard.IQs.Application.DTOs.Attempts
         public string SelectedOption { get; set; } = string.Empty;   // char? -> string
         public string CorrectOption { get; set; } = string.Empty;    // char -> string
         public bool IsCorrect { get; set; }                          // bool? → bool
+
+        public string Explanation {  get; set; } = string.Empty;
     }
 
 }

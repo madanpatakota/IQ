@@ -243,7 +243,8 @@ public class QuizService : IQuizService
 
             SelectedOption = a.SelectedOption?.ToString() ?? "",
             CorrectOption = a.Question.CorrectOption.ToString(),
-            IsCorrect = a.IsCorrect ?? false
+            IsCorrect = a.IsCorrect ?? false,
+            Explanation = a.Question.Explanation
 
         }).ToList();
     }

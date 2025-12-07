@@ -23,9 +23,13 @@ public class QuestionRepository : IQuestionRepository
         if (!string.IsNullOrWhiteSpace(difficulty) &&
             Enum.TryParse<DifficultyLevel>(difficulty, ignoreCase: true, out var diffEnum))
         {
+            var testData1 = await query.ToListAsync();
+
             // ✅ enum-to-enum comparison (translatable to SQL)
             query = query.Where(q => q.DifficultyLevel == diffEnum);
         }
+
+        var testData =  await query.ToListAsync();
 
         return await query
             .OrderBy(_ => Guid.NewGuid())

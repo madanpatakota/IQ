@@ -12,4 +12,6 @@ public class QuizSessionAnswer : BaseEntity
 
     public char? SelectedOption { get; set; }   // what student chose
     public bool? IsCorrect { get; set; }
+
+    //public string Explanation { get; set; }
 }

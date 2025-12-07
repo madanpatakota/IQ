@@ -78,7 +78,8 @@ namespace Misard.IQs.Infrastructure.Services
                 Token = token,
                 FullName = user.FullName,
                 Email = user.Email,
-                PhoneNumber = user.PhoneNumber
+                PhoneNumber = user.PhoneNumber,
+                id = user.Id
             };
         }
 
