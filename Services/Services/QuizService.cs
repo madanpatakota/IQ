@@ -1,4 +1,5 @@
-﻿using Misard.IQs.Application.DTOs.Quiz;
+﻿using Misard.IQs.Application.DTOs.Attempts;
+using Misard.IQs.Application.DTOs.Quiz;
 using Misard.IQs.Application.Exceptions;
 using Misard.IQs.Application.Interfaces.Repositories;
 using Misard.IQs.Application.Interfaces.Services;
@@ -11,13 +12,17 @@ public class QuizService : IQuizService
 {
     private readonly IQuestionRepository _questionRepo;
     private readonly IQuizSessionRepository _sessionRepo;
+    private readonly IQuizAnswersRepository _quizAnswersRepository;
+
 
     public QuizService(
         IQuestionRepository questionRepo,
-        IQuizSessionRepository sessionRepo)
+        IQuizSessionRepository sessionRepo,
+        IQuizAnswersRepository quizAnswersRepository)
     {
         _questionRepo = questionRepo;
         _sessionRepo = sessionRepo;
+        _quizAnswersRepository = quizAnswersRepository;
     }
 
     public async Task<StartQuizResponseDto> StartQuizAsync(StartQuizRequestDto request)
@@ -60,7 +65,9 @@ public class QuizService : IQuizService
             OptionA = q.OptionA,
             OptionB = q.OptionB,
             OptionC = q.OptionC,
-            OptionD = q.OptionD
+            OptionD = q.OptionD,
+            CorrectOption = q.CorrectOption,
+            //Explanation = q.Explanation,
         }).ToList();
 
         return new StartQuizResponseDto
@@ -196,4 +203,51 @@ public class QuizService : IQuizService
             Message = message
         };
     }
+
+    // -------------------------------
+    // 1️⃣ Get Attempts List (For UI)
+    // -------------------------------
+    public async Task<List<AttemptListItemDto>> GetAttemptsByUserAsync(int userId)
+    {
+        var sessions = await _sessionRepo.GetSessionsByUserAsync(userId);
+
+        return sessions.Select(s => new AttemptListItemDto
+        {
+            SessionId = s.Id,
+            TechnologyName = s.Technology?.Name ?? "",
+            DifficultyLevel = (int)(s.DifficultyLevel ?? 0),
+            TotalQuestions = s.TotalQuestions,
+            CorrectAnswers = s.CorrectAnswers ?? 0,
+            ScorePercent = s.ScorePercent ?? 0,
+            CreatedOn = s.CreatedOn,
+            Status = s.Status
+        }).ToList();
+    }
+
+
+    // ---------------------------------------
+    // 2️⃣ Get Attempt Details (Question + Answer)
+    // ---------------------------------------
+    public async Task<List<AttemptDetailDto>> GetAttemptDetailsAsync(int sessionId)
+    {
+        var answers = await _quizAnswersRepository.GetBySessionIdAsync(sessionId);
+
+        return answers.Select(a => new AttemptDetailDto
+        {
+            QuestionId = a.Question.Id,
+            QuestionText = a.Question.QuestionText,
+            OptionA = a.Question.OptionA,
+            OptionB = a.Question.OptionB,
+            OptionC = a.Question.OptionC,
+            OptionD = a.Question.OptionD,
+
+            SelectedOption = a.SelectedOption?.ToString() ?? "",
+            CorrectOption = a.Question.CorrectOption.ToString(),
+            IsCorrect = a.IsCorrect ?? false
+
+        }).ToList();
+    }
+
+
+
 }

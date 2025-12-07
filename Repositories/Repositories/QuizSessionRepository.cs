@@ -40,4 +40,14 @@ public class QuizSessionRepository : IQuizSessionRepository
 
         }
     }
+
+    public async Task<List<QuizSession>> GetSessionsByUserAsync(int userId)
+    {
+        return await _db.QuizSessions
+            .Include(q => q.Technology)
+            .Where(q => q.UserId == userId)
+            .OrderByDescending(q => q.CreatedOn)
+            .ToListAsync();
+    }
+
 }

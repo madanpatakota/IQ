@@ -34,6 +34,9 @@ public static class InfrastructureServiceRegistration
         services.AddScoped<ITechnologyRepository, TechnologyRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IQuizSessionRepository, QuizSessionRepository>();
+        services.AddScoped<IQuizSessionRepository, QuizSessionRepository>();
+        services.AddScoped<IQuizAnswersRepository, QuizAnswersRepository>();
+
 
         // Security
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();

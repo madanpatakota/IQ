@@ -17,7 +17,7 @@ public class Question : BaseEntity
     public string OptionD { get; set; } = null!;
 
     public char CorrectOption { get; set; }   // 'A','B','C','D'
-    public string? Explanation { get; set; }
+    public string Explanation { get; set; } = null!;
 
     public bool IsActive { get; set; } = true;
 }

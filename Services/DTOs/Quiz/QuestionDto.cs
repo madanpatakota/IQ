@@ -8,5 +8,9 @@ public class QuestionDto
     public string OptionB { get; set; } = null!;
     public string OptionC { get; set; } = null!;
     public string OptionD { get; set; } = null!;
+
+    public char CorrectOption { get; set; }
+
+    public string Explanation { get; set; } = null!;
 }
 
