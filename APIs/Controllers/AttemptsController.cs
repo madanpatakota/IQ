@@ -34,5 +34,37 @@ namespace Misard.IQs.Api.Controllers
             var result = await _quizService.GetAttemptDetailsAsync(sessionId);
             return Ok(result);
         }
+
+
+        [HttpGet("scorecard/{sessionId}")]
+        public async Task<IActionResult> GetScorecard(int sessionId)
+        {
+            return Ok(await _quizService.GetScorecardAsync(sessionId));
+        }
+
+        [HttpGet("leaderboard/{technologyId}")]
+        public async Task<IActionResult> GetLeaderboard(int technologyId)
+        {
+            return Ok(await _quizService.GetLeaderboardAsync(technologyId));
+        }
+
+        [HttpDelete("{sessionId}")]
+        public async Task<IActionResult> DeleteAttempt(int sessionId)
+        {
+            return Ok(await _quizService.DeleteAttemptAsync(sessionId));
+        }
+
+        [HttpGet("user/{userId}/count")]
+        public async Task<IActionResult> CountAttempts(int userId)
+        {
+            return Ok(await _quizService.GetAttemptCountAsync(userId));
+        }
+
+        [HttpGet("user/{userId}/latest")]
+        public async Task<IActionResult> LatestAttempt(int userId)
+        {
+            return Ok(await _quizService.GetLatestAttemptAsync(userId));
+        }
+
     }
 }

@@ -249,5 +249,69 @@ public class QuizService : IQuizService
     }
 
 
+    public async Task<ScorecardResultDto> GetScorecardAsync(int sessionId)
+    {
+        var session = await _sessionRepo.GetSessionWithTechAsync(sessionId);
+        if (session == null)
+            throw new Exception("Session not found");
+
+        return new ScorecardResultDto
+        {
+            SessionId = session.Id,
+            TechnologyName = session.Technology?.Name ?? "",
+            DifficultyLevel = (int)(session.DifficultyLevel ?? 0),
+            TotalQuestions = session.TotalQuestions,
+            CorrectAnswers = session.CorrectAnswers ?? 0,
+            ScorePercent = session.ScorePercent ?? 0,
+            StartedAt = session.StartedAt,
+            EndedAt = session.EndedAt,
+            TimeTakenSeconds = session.EndedAt.HasValue
+                ? (session.EndedAt.Value - session.StartedAt).TotalSeconds
+                : 0,
+            Status = session.Status
+        };
+    }
+
+    public async Task<List<LeaderboardItemDto>> GetLeaderboardAsync(int technologyId)
+    {
+        var sessions = await _sessionRepo.GetTopSessionsByTechnologyAsync(technologyId, 20);
+
+        return sessions.Select(s => new LeaderboardItemDto
+        {
+            UserName = s.User?.FullName ?? "Unknown",
+            ScorePercent = s.ScorePercent ?? 0,
+            CorrectAnswers = s.CorrectAnswers ?? 0,
+            TotalQuestions = s.TotalQuestions,
+            PlayedOn = s.CreatedOn
+        }).ToList();
+    }
+
+    public async Task<bool> DeleteAttemptAsync(int sessionId)
+    {
+        return await _sessionRepo.DeleteSessionAsync(sessionId);
+    }
+
+    public async Task<int> GetAttemptCountAsync(int userId)
+    {
+        return await _sessionRepo.GetAttemptCountAsync(userId);
+    }
+
+    public async Task<AttemptListItemDto?> GetLatestAttemptAsync(int userId)
+    {
+        var s = await _sessionRepo.GetLatestSessionAsync(userId);
+        if (s == null) return null;
+
+        return new AttemptListItemDto
+        {
+            SessionId = s.Id,
+            TechnologyName = s.Technology?.Name ?? "",
+            DifficultyLevel = (int)(s.DifficultyLevel ?? 0),
+            TotalQuestions = s.TotalQuestions,
+            CorrectAnswers = s.CorrectAnswers ?? 0,
+            ScorePercent = s.ScorePercent ?? 0,
+            CreatedOn = s.CreatedOn,
+            Status = s.Status
+        };
+    }
 
 }

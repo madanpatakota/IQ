@@ -12,4 +12,12 @@ public interface IQuizService
     Task<List<AttemptListItemDto>> GetAttemptsByUserAsync(int userId);
     Task<List<AttemptDetailDto>> GetAttemptDetailsAsync(int sessionId);
 
+
+    Task<ScorecardResultDto> GetScorecardAsync(int sessionId);
+    Task<List<LeaderboardItemDto>> GetLeaderboardAsync(int technologyId);
+    Task<bool> DeleteAttemptAsync(int sessionId);
+    Task<int> GetAttemptCountAsync(int userId);
+    Task<AttemptListItemDto?> GetLatestAttemptAsync(int userId);
+
+
 }

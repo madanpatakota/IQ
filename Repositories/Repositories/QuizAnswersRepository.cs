@@ -2,11 +2,7 @@
 using Misard.IQs.Application.Interfaces.Repositories;
 using Misard.IQs.Domain.Entities;
 using Misard.IQs.Infrastructure.Persistence;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Misard.IQs.Infrastructure.Repositories
 {
