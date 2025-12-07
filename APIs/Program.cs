@@ -22,7 +22,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular",
         builder => builder
-            .WithOrigins("http://localhost:4200")
+            .WithOrigins("http://localhost:4200" , "https://green-ground-0ebbf040f.3.azurestaticapps.net")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials());
