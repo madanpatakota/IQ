@@ -1,10 +1,12 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-using Misard.IQs.Application.DTOs.Auth;
+﻿using Misard.IQs.Application.DTOs.Auth;
+using Misard.IQs.Application.Exceptions;
 using Misard.IQs.Application.Interfaces.Repositories;
 using Misard.IQs.Application.Interfaces.Security;
 using Misard.IQs.Application.Interfaces.Services;
+using Misard.IQs.Application.Services;
 using Misard.IQs.Domain.Entities;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Misard.IQs.Infrastructure.Services
 {
@@ -12,13 +14,19 @@ namespace Misard.IQs.Infrastructure.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IJwtTokenGenerator _jwtTokenGenerator;
+        private readonly IOtpRepository _otpRepo;
+        private readonly EmailService _email;
 
         public AuthService(
             IUserRepository userRepository,
-            IJwtTokenGenerator jwtTokenGenerator)
+            IJwtTokenGenerator jwtTokenGenerator, 
+            IOtpRepository otpRepo,
+           EmailService emailService)
         {
             _userRepository = userRepository;
             _jwtTokenGenerator = jwtTokenGenerator;
+            _otpRepo = otpRepo;
+            _email = emailService;
         }
 
         // ----------------------------------------------------------
@@ -99,5 +107,79 @@ namespace Misard.IQs.Infrastructure.Services
             var computed = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
             return computed.SequenceEqual(storedHash);
         }
+
+
+
+        private readonly string _twoFactorApiKey = "48c4fdb5-d422-11f0-a6b2-0200cd936042";
+
+        public async Task<string> SendForgotPasswordOtpAsync(string phone)
+        {
+            string url = $"https://2factor.in/API/V1/{_twoFactorApiKey}/SMS/{phone}/AUTOGEN";
+
+            using var client = new HttpClient();
+            try
+            {
+                var response = await client.GetStringAsync(url);
+                dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject(response);
+                if (result.Status == "Success")
+                return result.Details;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            throw new BusinessException("Failed to send OTP.");
+        }
+
+        public async Task<bool> VerifyForgotPasswordOtpAsync(string sessionId, string otp)
+        {
+            string url = $"https://2factor.in/API/V1/{_twoFactorApiKey}/SMS/VERIFY/{sessionId}/{otp}";
+
+            using var client = new HttpClient();
+            var response = await client.GetStringAsync(url);
+
+            dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject(response);
+
+            return result.Status == "Success";
+        }
+
+
+
+        //send otp
+        public async Task SendOtpAsync(string email)
+        {
+            var otp = new Random().Next(1000, 9999).ToString();
+
+            await _otpRepo.SaveOtpAsync(new UserOtp
+            {
+                Email = email,
+                Otp = otp,
+                Expiry = DateTime.UtcNow.AddMinutes(5)
+            });
+
+            await _email.SendEmailAsync(
+                email,
+                "Misard IQs - Password Reset OTP",
+                $"<h2>Your OTP is <b>{otp}</b></h2><p>Valid for 5 minutes.</p>"
+            );
+        }
+
+
+        //verify otp
+        public async Task<bool> VerifyOtpAsync(string email, string otp)
+        {
+            var record = await _otpRepo.GetLatestOtpAsync(email);
+
+            if (record == null)
+                return false;
+
+            if (record.Expiry < DateTime.UtcNow)
+                return false;
+
+            return record.Otp == otp;
+        }
+
+
+
     }
 }

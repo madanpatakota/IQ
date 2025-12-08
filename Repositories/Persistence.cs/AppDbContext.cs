@@ -15,6 +15,7 @@ public class AppDbContext : DbContext
     public DbSet<QuizSession> QuizSessions => Set<QuizSession>();
     public DbSet<QuizSessionAnswer> QuizSessionAnswers => Set<QuizSessionAnswer>();
 
+    public DbSet<UserOtp> UserOtps { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -1,9 +1,12 @@
-using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Misard.IQs.Application.DependencyInjection;
-using Misard.IQs.Infrastructure.DependencyInjection;
 using Misard.IQs.Api.Middlewares;
+//using Misard.IQs.Api.Services;
+using Misard.IQs.Application.DependencyInjection;
+using Misard.IQs.Application.DTOs.Auth;
+using Misard.IQs.Application.Services;
+using Misard.IQs.Infrastructure.DependencyInjection;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +37,10 @@ builder.Services.AddControllers();
 // Application + Infrastructure
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.Configure<TwoFactorSettings>(
+    builder.Configuration.GetSection("TwoFactor"));
+builder.Services.AddScoped<EmailService>();
+
 
 // JWT Authentication
 var jwtSection = builder.Configuration.GetSection("JwtSettings");

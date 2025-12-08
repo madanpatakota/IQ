@@ -43,6 +43,9 @@ public static class InfrastructureServiceRegistration
         // Services
         services.AddScoped<IAuthService, AuthService>();
 
+        services.AddScoped<IOtpRepository, OtpRepository>();
+
+
         return services;
     }
 }
