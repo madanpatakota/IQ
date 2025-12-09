@@ -19,9 +19,9 @@ namespace Misard.IQs.Infrastructure.Services
             return user == null ? null : Map(user);
         }
 
-        public async Task<UserDto?> GetByEmailAsync(string email)
+        public async Task<UserDto?> GetByEmailorPhoneAsync(string email)
         {
-            var user = await _userRepository.GetByEmailAsync(email);
+            var user = await _userRepository.GetByEmailorPhoneAsync(email);
             return user == null ? null : Map(user);
         }
 

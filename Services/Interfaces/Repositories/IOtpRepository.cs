@@ -10,6 +10,11 @@ namespace Misard.IQs.Application.Interfaces.Repositories
     public interface IOtpRepository
     {
         Task SaveOtpAsync(UserOtp otp);
+        //Task<UserOtp> GetLatestOtpAsync(string email);
+
+        //Task<UserOtp> GetBySessionIdAsync(string sessionId);
         Task<UserOtp> GetLatestOtpAsync(string email);
+        Task DeleteAsync(UserOtp otp);
+
     }
 }

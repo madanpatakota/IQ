@@ -54,6 +54,19 @@ namespace Misard.IQs.Api.Controllers
         }
 
 
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequestDto dto)
+        {
+            var result = await _auth.ResetPasswordAsync(dto);
+
+            if (!result)
+                return BadRequest(new { message = "Failed to reset password" });
+
+            return Ok(new { message = "Password reset successful" });
+        }
+
+
+
         //Needs to reset the Password API.
 
 

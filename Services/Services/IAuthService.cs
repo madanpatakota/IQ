@@ -14,5 +14,8 @@ namespace Misard.IQs.Application.Interfaces.Services
         // Add these for forgot password
         Task SendOtpAsync(string email);
         Task<bool> VerifyOtpAsync(string email, string otp);
+
+        Task<bool> ResetPasswordAsync(ResetPasswordRequestDto dto);
+
     }
 }

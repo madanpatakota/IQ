@@ -24,9 +24,26 @@ namespace Misard.IQs.Infrastructure.Repositories
 
         public async Task<UserOtp> GetLatestOtpAsync(string email)
         {
+
+            var data = await _db.UserOtps.ToListAsync();
+
+            var emailCheck = _db.UserOtps.FirstOrDefaultAsync(x=>x.Email == email);
+
             return await _db.UserOtps
                 .OrderByDescending(x => x.Id)
                 .FirstOrDefaultAsync(x => x.Email == email);
         }
+
+        //public async Task<UserOtp> GetBySessionIdAsync(string sessionId)
+        //{
+        //    return await _db.UserOtps.FirstOrDefaultAsync(x => x.SessionId == sessionId);
+        //}
+
+        public async Task DeleteAsync(UserOtp otp)
+        {
+            _db.UserOtps.Remove(otp);
+            await _db.SaveChangesAsync();
+        }
+
     }
 }

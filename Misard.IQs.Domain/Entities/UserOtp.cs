@@ -12,5 +12,11 @@ namespace Misard.IQs.Domain.Entities
         public string Email { get; set; }
         public string Otp { get; set; }
         public DateTime Expiry { get; set; }
+
+        public string Phone { get; set; }
+
+
+
+         
     }
 }

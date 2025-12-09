@@ -34,7 +34,7 @@ namespace Misard.IQs.Infrastructure.Services
         // ----------------------------------------------------------
         public async Task<AuthResultDto> RegisterAsync(RegisterRequestDto dto)
         {
-            var existingEmail = await _userRepository.GetByEmailAsync(dto.Email);
+            var existingEmail = await _userRepository.GetByEmailorPhoneAsync(dto.Email);
             if (existingEmail != null)
                 throw new Exception("Email already registered.");
 
@@ -177,6 +177,39 @@ namespace Misard.IQs.Infrastructure.Services
                 return false;
 
             return record.Otp == otp;
+        }
+
+
+        public async Task<bool> ResetPasswordAsync(ResetPasswordRequestDto dto)
+        {
+
+            User userRecord = await _userRepository.GetByPhoneAsync(dto.Phone);
+
+            UserOtp otpRecord = await _otpRepo.GetLatestOtpAsync(userRecord.Email);
+
+            if (userRecord == null)
+                throw new BusinessException("Invalid session.");
+
+            //if (otpRecord.Expiry < DateTime.UtcNow)
+             //   throw new BusinessException("OTP has expired.");
+
+            var user = await _userRepository.GetByEmailorPhoneAsync(userRecord.Email);
+
+            if (user == null)
+                throw new BusinessException("User not found.");
+
+            // Generate new password hash + salt
+            CreatePasswordHash(dto.NewPassword, out byte[] hash, out byte[] salt);
+
+            user.PasswordHash = hash;
+            user.PasswordSalt = salt;
+
+            await _userRepository.UpdateAsync(user);
+
+            // Remove OTP
+            await _otpRepo.DeleteAsync(otpRecord);
+
+            return true;
         }
 
 

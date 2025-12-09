@@ -20,11 +20,17 @@ namespace Misard.IQs.Infrastructure.Repositories
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
 
-        public async Task<User?> GetByEmailAsync(string email)
+        public async Task<User?> GetByEmailorPhoneAsync(string value)
         {
             return await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == email);
+                .FirstOrDefaultAsync(u => u.Email == value || u.PhoneNumber == value);
         }
+
+        //public async Task<User> GetByEmailOrPhoneAsync(string value)
+        //{
+        //    return await _context.Users
+        //        .FirstOrDefaultAsync(x => x.Email == value || x.PhoneNumber == value);
+        //}
 
 
         //public async Task<User> getUsersList()
@@ -53,5 +59,17 @@ namespace Misard.IQs.Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return user;
         }
+
+
+        
+
+        public async Task UpdateAsync(User user)
+        {
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+        }
+
+
+
     }
 }
